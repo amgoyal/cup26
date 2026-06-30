@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git commit *)",
+      "Bash(git *)",
+      "Bash($SKILL_DIR/scripts/task-brief $PLAN *)",
+      "Bash(npm create *)",
+      "Bash(npm --version)",
+      "Bash(npm install *)",
+      "Bash(npm test *)"
+    ]
+  }
+}
