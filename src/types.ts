@@ -40,7 +40,8 @@ export type OddsCache = OddsEvent[]
 export interface ApiMatch {
   id: number
   stage: string
-  homeTeam: { id: number; name: string; shortName: string; crest: string } | null
-  awayTeam: { id: number; name: string; shortName: string; crest: string } | null
+  // API sends all-null object for undetermined slots, not null itself
+  homeTeam: { id: number | null; name: string | null; shortName: string | null; crest: string | null } | null
+  awayTeam: { id: number | null; name: string | null; shortName: string | null; crest: string | null } | null
   score: { winner: 'HOME_TEAM' | 'AWAY_TEAM' | 'DRAW' | null }
 }

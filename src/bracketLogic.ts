@@ -83,11 +83,12 @@ export function buildInitialBracket(apiMatches: ApiMatch[]): Match[] {
 }
 
 function overlayApiMatch(target: Match, apiMatch: ApiMatch): void {
-  target.home = apiMatch.homeTeam
-    ? { id: apiMatch.homeTeam.id, name: apiMatch.homeTeam.name, shortName: apiMatch.homeTeam.shortName, crest: apiMatch.homeTeam.crest }
+  // API sends { id: null, name: null, ... } for undetermined slots — treat as null
+  target.home = apiMatch.homeTeam?.id != null
+    ? { id: apiMatch.homeTeam.id!, name: apiMatch.homeTeam.name!, shortName: apiMatch.homeTeam.shortName!, crest: apiMatch.homeTeam.crest! }
     : null
-  target.away = apiMatch.awayTeam
-    ? { id: apiMatch.awayTeam.id, name: apiMatch.awayTeam.name, shortName: apiMatch.awayTeam.shortName, crest: apiMatch.awayTeam.crest }
+  target.away = apiMatch.awayTeam?.id != null
+    ? { id: apiMatch.awayTeam.id!, name: apiMatch.awayTeam.name!, shortName: apiMatch.awayTeam.shortName!, crest: apiMatch.awayTeam.crest! }
     : null
 
   if (apiMatch.score.winner === 'HOME_TEAM') {

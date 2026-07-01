@@ -17,7 +17,7 @@ export default function App() {
 
   const applyOdds = useCallback((ms: Match[], cache: OddsCache): Match[] => {
     return ms.map(m => {
-      if (!m.home || !m.away) return m
+      if (!m.home?.name || !m.away?.name) return m
       const odds = lookupOdds(cache, m.home.name, m.away.name)
       if (!odds) return m
       return { ...m, homeProb: odds.homeProb, awayProb: odds.awayProb }
