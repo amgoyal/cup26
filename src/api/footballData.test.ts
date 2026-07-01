@@ -5,7 +5,7 @@ const mockResponse = {
   matches: [
     {
       id: 1,
-      stage: 'ROUND_OF_32',
+      stage: 'LAST_32',
       homeTeam: { id: 10, name: 'Brazil', shortName: 'Brazil', crest: 'https://example.com/br.svg' },
       awayTeam: { id: 11, name: 'Croatia', shortName: 'Croatia', crest: 'https://example.com/hr.svg' },
       score: { winner: 'HOME_TEAM' },
@@ -25,7 +25,7 @@ describe('fetchBracket', () => {
   it('calls football-data.org with correct URL and auth header', async () => {
     await fetchBracket()
     expect(fetch).toHaveBeenCalledWith(
-      'https://api.football-data.org/v4/competitions/WC/matches',
+      expect.stringContaining('/v4/competitions/WC/matches'),
       expect.objectContaining({
         headers: expect.objectContaining({ 'X-Auth-Token': 'test-key' }),
       })

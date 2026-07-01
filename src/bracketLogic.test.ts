@@ -22,7 +22,7 @@ const croatia: Team = { id: 2, name: 'Croatia', shortName: 'Croatia', crest: '' 
 describe('buildInitialBracket', () => {
   it('maps 16 R32 API matches to left (slots 0-7) and right (slots 0-7)', () => {
     const apiMatches = Array.from({ length: 16 }, (_, i) =>
-      makeApiMatch(i + 1, 'ROUND_OF_32', `TeamA${i}`, `TeamB${i}`)
+      makeApiMatch(i + 1, 'LAST_32', `TeamA${i}`, `TeamB${i}`)
     )
     const matches = buildInitialBracket(apiMatches)
     const r32 = matches.filter(m => m.round === 'R32')
@@ -32,20 +32,20 @@ describe('buildInitialBracket', () => {
   })
 
   it('sets winner from API score', () => {
-    const apiMatches = [makeApiMatch(1, 'ROUND_OF_32', 'Brazil', 'Croatia', 'HOME_TEAM')]
+    const apiMatches = [makeApiMatch(1, 'LAST_32', 'Brazil', 'Croatia', 'HOME_TEAM')]
     const matches = buildInitialBracket(apiMatches)
     expect(matches[0].winner?.name).toBe('Brazil')
     expect(matches[0].isProjected).toBe(false)
   })
 
   it('leaves winner null for unplayed matches', () => {
-    const apiMatches = [makeApiMatch(1, 'ROUND_OF_32', 'Brazil', 'Croatia', null)]
+    const apiMatches = [makeApiMatch(1, 'LAST_32', 'Brazil', 'Croatia', null)]
     const matches = buildInitialBracket(apiMatches)
     expect(matches[0].winner).toBeNull()
   })
 
   it('handles null homeTeam (TBD slot)', () => {
-    const apiMatches = [makeApiMatch(1, 'ROUND_OF_32', null, 'Croatia', null)]
+    const apiMatches = [makeApiMatch(1, 'LAST_32', null, 'Croatia', null)]
     const matches = buildInitialBracket(apiMatches)
     expect(matches[0].home).toBeNull()
   })
@@ -54,7 +54,7 @@ describe('buildInitialBracket', () => {
 describe('advanceWinner', () => {
   it('sets winner on a match and places team in next round', () => {
     const apiMatches = Array.from({ length: 16 }, (_, i) =>
-      makeApiMatch(i + 1, 'ROUND_OF_32', `TeamA${i}`, `TeamB${i}`)
+      makeApiMatch(i + 1, 'LAST_32', `TeamA${i}`, `TeamB${i}`)
     )
     const initial = buildInitialBracket(apiMatches)
     // advance slot 0 left → should fill R16 left slot 0 home
@@ -69,7 +69,7 @@ describe('advanceWinner', () => {
 
   it('places winner in away slot when source slot is odd', () => {
     const apiMatches = Array.from({ length: 16 }, (_, i) =>
-      makeApiMatch(i + 1, 'ROUND_OF_32', `TeamA${i}`, `TeamB${i}`)
+      makeApiMatch(i + 1, 'LAST_32', `TeamA${i}`, `TeamB${i}`)
     )
     const initial = buildInitialBracket(apiMatches)
     const r32Match = initial.find(m => m.round === 'R32' && m.side === 'left' && m.slot === 1)!
@@ -98,7 +98,7 @@ describe('advanceWinner', () => {
 describe('clearDownstream', () => {
   it('clears projected winners downstream of a changed match', () => {
     const apiMatches = Array.from({ length: 16 }, (_, i) =>
-      makeApiMatch(i + 1, 'ROUND_OF_32', `TeamA${i}`, `TeamB${i}`)
+      makeApiMatch(i + 1, 'LAST_32', `TeamA${i}`, `TeamB${i}`)
     )
     const initial = buildInitialBracket(apiMatches)
     const r32Match = initial.find(m => m.round === 'R32' && m.side === 'left' && m.slot === 0)!
@@ -112,7 +112,7 @@ describe('clearDownstream', () => {
 
   it('clears stale winner downstream when sibling slot is still filled', () => {
     const apiMatches = Array.from({ length: 16 }, (_, i) =>
-      makeApiMatch(i + 1, 'ROUND_OF_32', `TeamA${i}`, `TeamB${i}`)
+      makeApiMatch(i + 1, 'LAST_32', `TeamA${i}`, `TeamB${i}`)
     )
     const initial = buildInitialBracket(apiMatches)
     // Advance slot 0 and slot 1 to fill R16 slot 0
