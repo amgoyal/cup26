@@ -16,8 +16,8 @@ export const SLOTS_PER_ROUND: Record<Round, number> = {
 
 // football-data.org stage name → our Round
 export const STAGE_TO_ROUND: Record<string, Round> = {
-  ROUND_OF_32: 'R32',
-  ROUND_OF_16: 'R16',
+  LAST_32: 'R32',
+  LAST_16: 'R16',
   QUARTER_FINALS: 'QF',
   SEMI_FINALS: 'SF',
   FINAL: 'FINAL',
