@@ -109,4 +109,34 @@ describe('clearDownstream', () => {
     const r16 = cleared.find(m => m.round === 'R16' && m.side === 'left' && m.slot === 0)!
     expect(r16.home).toBeNull()
   })
+
+  it('clears stale winner downstream when sibling slot is still filled', () => {
+    const apiMatches = Array.from({ length: 16 }, (_, i) =>
+      makeApiMatch(i + 1, 'ROUND_OF_32', `TeamA${i}`, `TeamB${i}`)
+    )
+    const initial = buildInitialBracket(apiMatches)
+    // Advance slot 0 and slot 1 to fill R16 slot 0
+    const r32s0 = initial.find(m => m.round === 'R32' && m.side === 'left' && m.slot === 0)!
+    const r32s1 = initial.find(m => m.round === 'R32' && m.side === 'left' && m.slot === 1)!
+    const afterS0 = advanceWinner(initial, r32s0.id, r32s0.home!)
+    const afterS1 = advanceWinner(afterS0, r32s1.id, r32s1.home!)
+    // Now advance R16 slot 0 winner
+    const r16 = afterS1.find(m => m.round === 'R16' && m.side === 'left' && m.slot === 0)!
+    const afterR16 = advanceWinner(afterS1, r16.id, r16.home!)
+    // QF should have winner from R16
+    const qf = afterR16.find(m => m.round === 'QF' && m.side === 'left' && m.slot === 0)!
+    expect(qf.home?.name).toBe('TeamA0')
+
+    // Now re-pick R32 slot 0 to the other team
+    const cleared = clearDownstream(afterR16, r32s0.id)
+    const r16After = cleared.find(m => m.round === 'R16' && m.side === 'left' && m.slot === 0)!
+    const qfAfter = cleared.find(m => m.round === 'QF' && m.side === 'left' && m.slot === 0)!
+    // R16 home should be cleared but away (from slot 1) should still be there
+    expect(r16After.home).toBeNull()
+    expect(r16After.away?.name).toBe('TeamA1')  // sibling slot preserved
+    // Winner should be cleared because the cleared team (TeamA0) was the winner
+    expect(r16After.winner).toBeNull()
+    // QF should also be cleared downstream
+    expect(qfAfter.home).toBeNull()
+  })
 })

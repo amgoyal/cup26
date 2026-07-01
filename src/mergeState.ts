@@ -10,6 +10,8 @@ export function mergeApiWithProjection(apiMatches: Match[], stored: Match[]): Ma
     // Overlay stored projection onto api shell (preserves live team data from API)
     return {
       ...apiMatch,
+      home: apiMatch.home ?? storedMatch.home,
+      away: apiMatch.away ?? storedMatch.away,
       winner: storedMatch.winner,
       isProjected: storedMatch.isProjected,
       homeProb: storedMatch.homeProb,

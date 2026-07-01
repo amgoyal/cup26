@@ -27,7 +27,10 @@ export default function App() {
   const loadData = useCallback(async () => {
     setApiStatus('loading')
     try {
-      const [apiMatches, odds] = await Promise.all([fetchBracket(), fetchAllOdds()])
+      const [apiMatches, odds] = await Promise.all([
+        fetchBracket(),
+        fetchAllOdds().catch(() => [] as OddsCache),  // odds failure is non-fatal
+      ])
       oddsCacheRef.current = odds
       const stored = loadProjection() ?? []
       const merged = mergeApiWithProjection(apiMatches, stored)

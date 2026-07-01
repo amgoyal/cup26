@@ -163,15 +163,22 @@ export function clearDownstream(matches: Match[], matchId: string): Match[] {
     if (!nextMatch) return
 
     const isHome = slot % 2 === 0
+    const teamBeingCleared = isHome ? nextMatch.home : nextMatch.away
+    if (!teamBeingCleared) return  // nothing to clear
+
+    const wasWinner = nextMatch.winner?.id === teamBeingCleared.id
+
     if (isHome) {
-      if (!nextMatch.home) return
       nextMatch.home = null; nextMatch.homeProb = null
     } else {
-      if (!nextMatch.away) return
       nextMatch.away = null; nextMatch.awayProb = null
     }
 
-    if (!nextMatch.home && !nextMatch.away) {
+    if (wasWinner) {
+      nextMatch.winner = null
+      nextMatch.isProjected = false
+      clearFrom(next, side, nextSlot)
+    } else if (!nextMatch.home && !nextMatch.away) {
       nextMatch.winner = null
       nextMatch.isProjected = false
       clearFrom(next, side, nextSlot)

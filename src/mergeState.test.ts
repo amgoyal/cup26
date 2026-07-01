@@ -35,4 +35,14 @@ describe('mergeApiWithProjection', () => {
     const result = mergeApiWithProjection(api, [])
     expect(result[0].home?.name).toBe('Brazil')
   })
+
+  it('preserves stored home/away when API slot is null', () => {
+    const api = [makeMatch('R16-left-0', { home: null, away: null, winner: null })]
+    const stored = [makeMatch('R16-left-0', { home: brazil, away: croatia, winner: brazil, isProjected: true })]
+    const result = mergeApiWithProjection(api, stored)
+    const m = result.find(m => m.id === 'R16-left-0')!
+    expect(m.home?.name).toBe('Brazil')
+    expect(m.away?.name).toBe('Croatia')
+    expect(m.winner?.name).toBe('Brazil')
+  })
 })
